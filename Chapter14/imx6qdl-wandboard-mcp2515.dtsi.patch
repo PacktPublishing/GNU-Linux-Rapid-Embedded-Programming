@@ -1,0 +1,69 @@
+diff --git a/arch/arm/boot/dts/imx6qdl-wandboard.dtsi b/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
+index 9e096d8..bc83ffe 100644
+--- a/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
+@@ -36,6 +36,16 @@
+ 		};
+ 	};
+ 
++	clocks {
++		clk_4MHz: clk@1 {
++			compatible = "fixed-clock";
++			reg = <1>;
++			#clock-cells = <0>;
++			clock-frequency = <4000000>;
++			clock-output-names = "clk-4MHz";
++		};
++	};
++
+ 	sound {
+ 		compatible = "fsl,imx6-wandboard-sgtl5000",
+ 			     "fsl,imx-audio-sgtl5000";
+@@ -147,6 +157,21 @@
+ 			>;
+ 		};
+ 
++		pinctrl_ecspi1_1: ecspi1grp-1 {
++			fsl,pins = <
++				MX6QDL_PAD_EIM_D17__ECSPI1_MISO		0x100b1
++				MX6QDL_PAD_EIM_D18__ECSPI1_MOSI		0x100b1
++				MX6QDL_PAD_EIM_D16__ECSPI1_SCLK		0x100b1
++				MX6QDL_PAD_EIM_EB2__GPIO2_IO30		0x000f0b0
++			>;
++		};
++
++		pinctrl_can_int: cangrp-1 {
++			fsl,pins = <
++				MX6QDL_PAD_EIM_D27__GPIO3_IO27		0x80000000
++			>;
++		};
++
+ 		pinctrl_uart1: uart1grp {
+ 			fsl,pins = <
+ 				MX6QDL_PAD_CSI0_DAT10__UART1_TX_DATA	0x1b0b1
+@@ -224,6 +249,25 @@
+ 	status = "okay";
+ };
+ 
++&ecspi1 {
++	fsl,spi-num-chipselects = <1>;
++	cs-gpios = <&gpio2 30 0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_ecspi1_1>, <&pinctrl_can_int>;
++	status = "okay";
++
++	can@0 {
++		compatible = "microchip,mcp2515";
++		reg = <0>;
++		spi-max-frequency = <1000000>;
++
++		clocks = <&clk_4MHz>;
++
++		interrupt-parent = <&gpio3>;
++		interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
++	};
++};
++
+ &uart1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart1>;

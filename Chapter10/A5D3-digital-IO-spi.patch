@@ -1,0 +1,26 @@
+diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+index ff888d2..0544120 100644
+--- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+@@ -157,8 +157,20 @@
+ 			};
+ 
+ 			spi1: spi@f8008000 {
+-				cs-gpios = <&pioC 25 0>;
++				cs-gpios = <&pioC 25 0>, <&pioC 16 0>;
+ 				status = "okay";
++
++				vni8200xp@0 {
++					compatible = "spidev";
++					reg = <0>;
++					spi-max-frequency = <1000000>;
++				};
++
++				clt01_38sq7@1 {
++					compatible = "spidev";
++					reg = <1>;
++					spi-max-frequency = <1000000>;
++				};
+ 			};
+ 
+ 			adc0: adc@f8018000 {

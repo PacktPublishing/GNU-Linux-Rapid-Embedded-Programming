@@ -1,0 +1,22 @@
+diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+index ff888d2..0c9b183 100644
+--- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+@@ -68,6 +68,17 @@
+ 			i2c0: i2c@f0014000 {
+ 				pinctrl-0 = <&pinctrl_i2c0_pu>;
+ 				status = "okay";
++				clock-frequency = <100000>;
++
++				htu21: htu21@40 {
++					compatible = "htu21";
++					reg = <0x40>;
++				};
++
++				t5403: t5403@77 {
++					compatible = "t5403";
++					reg = <0x77>;
++				};
+ 			};
+ 
+ 			i2c1: i2c@f0018000 {

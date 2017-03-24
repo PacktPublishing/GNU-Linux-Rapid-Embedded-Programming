@@ -1,0 +1,51 @@
+/dts-v1/;
+/plugin/;
+ 
+/ {
+	compatible = "ti,beaglebone", "ti,beaglebone-black";
+
+	/* Identification string */
+	part-number = "BB-W1-GPIO";
+
+	/* The version */
+	version = "00A0";
+
+	/* Define the pins usage */
+	exclusive-use =
+		/* the pin header P8 uses */
+        	"P8.11",
+        	/* Hardware IP cores in use */
+        	"gpio1_13"; 
+ 
+	fragment@0 {
+		target = <&am33xx_pinmux>;
+
+		__overlay__ {
+			 bb_w1_pins: pinmux_bb_w1_pins {
+				 pinctrl-single,pins = <0x34 0x37>;
+			 };
+		};
+	};
+ 
+	fragment@1 {
+		target = <&ocp>;
+
+		__overlay__ {
+			#address-cells  = <1>;
+			#size-cell      = <0>;
+			status		= "okay";
+
+			/* Setup the pins */
+			pinctrl-names	= "default";
+			pinctrl-0	= <&bb_w1_pins>;
+
+			/* Define the new one-wire master as based on w1-gpio
+			 * and using GPIO1_13
+			 */
+			onewire@0 {
+				compatible	= "w1-gpio";
+				gpios		= <&gpio1 13 0>;
+			};
+		};
+	};
+};

@@ -1,0 +1,24 @@
+diff --git a/Makefile b/Makefile
+index 6e01a17..c24d09d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,6 +1,6 @@
+ CC=gcc
+ CFLAGS=-Wall -pedantic -g -DUNIX_HOST -DVER=\"`svnversion -n`\"
+-LIBS=-lm -lreadline
++LIBS=-lm
+ 
+ TARGET	= picoc
+ SRCS	= picoc.c table.c lex.c parse.c expression.c heap.c type.c \
+diff --git a/platform.h b/platform.h
+index 2d7c8eb..c0b3a9a 100644
+--- a/platform.h
++++ b/platform.h
+@@ -49,7 +49,6 @@
+ # ifndef NO_FP
+ #  include <math.h>
+ #  define PICOC_MATH_LIBRARY
+-#  define USE_READLINE
+ #  undef BIG_ENDIAN
+ #  if defined(__powerpc__) || defined(__hppa__) || defined(__sparc__)
+ #   define BIG_ENDIAN

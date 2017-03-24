@@ -1,0 +1,48 @@
+diff --git a/arch/arm/boot/dts/imx6qdl-wandboard.dtsi b/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
+index 9e096d8..36cce9a 100644
+--- a/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
+@@ -147,6 +147,16 @@
+ 			>;
+ 		};
+ 
++		pinctrl_ecspi1_1: ecspi1grp-1 {
++			fsl,pins = <
++				MX6QDL_PAD_EIM_D17__ECSPI1_MISO 0x100b1
++				MX6QDL_PAD_EIM_D18__ECSPI1_MOSI 0x100b1
++				MX6QDL_PAD_EIM_D16__ECSPI1_SCLK 0x100b1
++				MX6QDL_PAD_EIM_EB2__GPIO2_IO30  0x000f0b0
++				MX6QDL_PAD_KEY_COL2__GPIO4_IO10 0x000f0b0
++			>;
++		};
++
+ 		pinctrl_uart1: uart1grp {
+ 			fsl,pins = <
+ 				MX6QDL_PAD_CSI0_DAT10__UART1_TX_DATA	0x1b0b1
+@@ -224,6 +234,26 @@
+ 	status = "okay";
+ };
+ 
++&ecspi1 {
++	fsl,spi-num-chipselects = <2>;
++	cs-gpios = <&gpio2 30 0>, <&gpio4 10 0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_ecspi1_1>;
++	status = "okay";
++
++	spidev@0 {
++		compatible = "spidev";
++		reg = <0>;
++		spi-max-frequency = <1000000>;
++	};
++
++	spidev@1 {
++		compatible = "spidev";
++		reg = <1>;
++		spi-max-frequency = <1000000>;
++	};
++};
++
+ &uart1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart1>;

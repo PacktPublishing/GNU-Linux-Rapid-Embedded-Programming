@@ -1,0 +1,12 @@
+# udhcpd configuration file for bridging
+
+start 		192.168.32.100
+end		192.168.32.200
+
+interface	br0
+max_leases	10
+
+option		dns	8.8.8.8 8.8.4.4
+option		subnet	255.255.255.0
+option		router	192.168.32.41
+option		lease	864000		# 10 days of seconds

@@ -1,0 +1,47 @@
+diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+index ff888d2..03a4c64 100644
+--- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+@@ -61,6 +61,12 @@
+ 				status = "okay";
+ 			};
+ 
++                        ssc0: ssc@f0008000 {
++                                pinctrl-0 = <&pinctrl_ssc0_tx &pinctrl_ssc0_rx>;
++                                status = "okay";
++                        };
++
++
+ 			can0: can@f000c000 {
+ 				status = "okay";
+ 			};
+@@ -68,6 +74,11 @@
+ 			i2c0: i2c@f0014000 {
+ 				pinctrl-0 = <&pinctrl_i2c0_pu>;
+ 				status = "okay";
++
++				wm8731: wm8731@1a {
++					compatible = "wm8731";
++					reg = <0x1a>;
++				};
+ 			};
+ 
+ 			i2c1: i2c@f0018000 {
+@@ -333,4 +344,17 @@
+ 			gpios = <&pioE 24 GPIO_ACTIVE_HIGH>;
+ 		};
+ 	};
++
++	sound {
++		compatible = "atmel,sam9x5-wm8731-audio";
++		atmel,model = "wm8731 @ SAMA5D3 Xplained";
++		atmel,audio-routing =
++			"Headphone Jack", "RHPOUT",
++			"Headphone Jack", "LHPOUT",
++			"LLINEIN", "Line In Jack",
++			"RLINEIN", "Line In Jack";
++
++		atmel,ssc-controller = <&ssc0>;
++		atmel,audio-codec = <&wm8731>;
++	};
+ };

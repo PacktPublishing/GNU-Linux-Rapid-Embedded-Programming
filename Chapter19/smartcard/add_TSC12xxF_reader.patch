@@ -1,0 +1,26 @@
+--- /etc/libccid_Info.plist.orig	2016-10-24 17:48:15.956215450 +0000
++++ /etc/libccid_Info.plist	2016-10-24 17:51:50.106215475 +0000
+@@ -377,6 +377,7 @@
+ 		<string>0x08C3</string>
+ 		<string>0x15E1</string>
+ 		<string>0x062D</string>
++		<string>0x1862</string>
+ 	</array>
+ 
+ 	<key>ifdProductID</key>
+@@ -652,6 +653,7 @@
+ 		<string>0x0402</string>
+ 		<string>0x2007</string>
+ 		<string>0x0001</string>
++		<string>0x0001</string>
+ 	</array>
+ 
+ 	<key>ifdFriendlyName</key>
+@@ -927,6 +929,7 @@
+ 		<string>Precise Biometrics Precise 200 MC</string>
+ 		<string>RSA RSA SecurID (R) Authenticator</string>
+ 		<string>THRC Smart Card Reader</string>
++		<string>TSC12xxF Reader</string> 
+ 	</array>
+ 
+ 	<key>Copyright</key>

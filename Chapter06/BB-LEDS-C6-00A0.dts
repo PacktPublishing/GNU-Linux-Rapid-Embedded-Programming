@@ -1,0 +1,61 @@
+/dts-v1/;
+/plugin/;
+ 
+/ {
+	compatible = "ti,beaglebone", "ti,beaglebone-black";
+
+	/* Identification string */
+	part-number = "BB-LEDS-C6-00A0";
+
+	/* The version */
+	version = "00A0";
+
+	/* Define the pins usage */
+	exclusive-use =
+		/* the pin header P8 uses */
+        	"P8.9",
+        	"P8.10",
+        	/* Hardware IP cores in use */
+		"timer5",
+		"timer6";
+ 
+	fragment@0 {
+		target = <&am33xx_pinmux>;
+
+		__overlay__ {
+			 bb_led_pins: pinmux_bb_led_pins {
+				pinctrl-single,pins = <
+					0x9c 0x37
+					0x98 0x37
+				>;
+			 };
+		};
+	};
+ 
+	fragment@1 {
+		target = <&ocp>;
+
+		__overlay__ {
+			c6_leds {
+				compatible	= "gpio-leds";
+				pinctrl-names	= "default";
+				pinctrl-0	= <&bb_led_pins>;
+
+				yellow_led {
+					label	= "c6:yellow";
+					gpios	= <&gpio2 5 0>;
+					linux,default-trigger = "none";
+                    			default-state = "off";
+				};
+
+				red_led {
+					label	= "c6:red";
+					gpios	= <&gpio2 4 0>;
+					linux,default-trigger = "none";
+                    			default-state = "off";
+				};
+
+			};
+		};
+	};
+};

@@ -1,0 +1,33 @@
+diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+index ff888d2..f4621a8 100644
+--- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+@@ -29,6 +29,12 @@
+ 		main_xtal {
+ 			clock-frequency = <12000000>;
+ 		};
++
++		sc16is7xx_ck: sc16is7xx_ck {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <14745600>;
++		};
+ 	};
+ 
+ 	ahb {
+@@ -159,6 +165,15 @@
+ 			spi1: spi@f8008000 {
+ 				cs-gpios = <&pioC 25 0>;
+ 				status = "okay";
++
++				sc16is750: sc16is750@0 {
++					compatible = "nxp,sc16is750";
++					reg = <0>;
++					spi-max-frequency = <15000000>;
++
++					clocks = <&sc16is7xx_ck>;
++					interrupts-extended = <&pioA 22 IRQ_TYPE_EDGE_FALLING>;
++				};
+ 			};
+ 
+ 			adc0: adc@f8018000 {

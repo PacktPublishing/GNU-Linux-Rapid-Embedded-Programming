@@ -1,0 +1,177 @@
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/errno.h>
+#include <linux/err.h>
+#include <linux/kernel.h>
+#include <linux/ctype.h>
+#include <linux/delay.h>
+#include <linux/sched.h>
+#include <linux/slab.h>
+#include <linux/gpio.h>
+#include <linux/interrupt.h>
+
+/*
+ * Defines
+ */
+
+#define NAME			KBUILD_BASENAME
+
+/*
+ * Module's parameters
+ */
+
+static int debug;
+module_param(debug, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+MODULE_PARM_DESC(int, "Set to 1 to enable debugging messages");
+
+static int ngpios;
+static int gpios[2] = { -1 , -1 };
+module_param_array(gpios, int, &ngpios, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+MODULE_PARM_DESC(gpios, "Defines the GPIOs number to be used as a list of"
+                 " numbers separated by commas.");
+
+/* Logging stuff */
+#define __message(level, fmt, args...)                                  \
+                printk(level "%s: " fmt "\n" , NAME , ## args)
+
+#define DBG(code)                                                       \
+        do {                                                            \
+                if (unlikely(debug)) do {                               \
+                        code                                            \
+                } while (0);                                            \
+        } while (0)
+
+#define info(fmt, args...)                                              \
+        __message(KERN_INFO, fmt , ## args)
+
+#define err(fmt, args...)                                               \
+        __message(KERN_ERR, fmt , ## args)
+
+#define dbg(fmt, args...)                                               \
+        do {                                                            \
+                if (unlikely(debug))                                    \
+                        __message(KERN_DEBUG, fmt , ## args);           \
+        } while (0)
+
+/*
+ * Global variables
+ */
+
+static int irqs[2] = { -1 , -1 };
+
+/*
+ * IRQ handler
+ */
+
+static irqreturn_t irq_handler(int i, void *ptr, struct pt_regs *regs)
+{
+	int *gpio = (int *) ptr;
+	int status;
+
+	BUG_ON(!gpio);
+
+	/* Get the gpio status */
+	status = !!gpio_get_value(*gpio);
+
+	info("IRQ on GPIO%d status=%d", *gpio, status);
+
+        return IRQ_HANDLED;
+}
+
+/*
+ * Usage function
+ */
+
+static void usage(void)
+{
+	printk(KERN_ERR "usage: insmod %s [ debug=1 ] "
+			" gpios=gpio1#,gpio2#\n", NAME);
+}
+
+/*
+ * Module stuff
+ */
+
+static int __init gpioirq_init(void)
+{
+	int i;
+	int ret;
+
+	/* Check the supplied GPIOs numbers */
+	if (ngpios != 2) {
+		usage();
+		goto exit;
+	}
+
+	/* Now let's start by requesting the GPIOs and then setting them up
+	 * as needed
+	 */
+	for (i = 0; i < 2; i++) {
+		dbg("got GPIO%d", gpios[i]);
+
+		/* Is the GPIO line free? */
+		ret = gpio_request(gpios[i], NAME);
+		if (ret) {
+			err("unable to request GPIO%d\n", gpios[i]);
+			goto undo;
+        	}
+
+		/* If so then setting it as input */
+        	gpio_direction_input(gpios[i]);
+
+                /* Is GPIO in pin IRQ capable? */
+                irqs[i] = gpio_to_irq(gpios[i]);
+		if (irqs[i] < 0) {
+			err("GPIO%d is not IRQ capable\n", gpios[i]);
+                        goto undo;
+                }
+
+		/* Then request the IRQ */
+		ret = request_irq(irqs[i], (irq_handler_t) irq_handler,
+				IRQF_TRIGGER_FALLING, NAME, &gpios[i]);
+                if (ret < 0) {
+			err("unable to request IRQ%d for GPIO%d\n",
+				irqs[i], gpios[i]);
+                        goto undo;
+                }
+		dbg("GPIO%d mapped on IRQ %d", gpios[i], irqs[i]);
+	}
+
+        printk(KERN_INFO "GPIO IRQ module loaded\n");
+
+        return 0;
+
+undo:
+	for ( ; i >= 0; i--) {
+		if (irqs[i] >= 0)
+			free_irq(irqs[i], &gpios[i]);
+		if (gpios[i] >= 0)
+			gpio_free(gpios[i]);
+	}
+
+exit:
+	return -EINVAL;
+}
+
+static void __exit gpioirq_exit(void)
+{
+	int i;
+
+	for (i = 0; i < 2; i++) {
+		dbg("freeing IRQ %d for GPIO%d...", irqs[i], gpios[i]);
+		free_irq(irqs[i], &gpios[i]);
+		gpio_free(gpios[i]);
+	}
+
+        printk(KERN_INFO "GPIO IRQ module released\n");
+}
+
+module_init(gpioirq_init);
+module_exit(gpioirq_exit);
+
+MODULE_AUTHOR("Rodolfo Giometti <giometti@hce-engineering.com>");
+MODULE_DESCRIPTION("GPIO IRQ module");
+MODULE_LICENSE("GPL");
+MODULE_VERSION("0.0.1");

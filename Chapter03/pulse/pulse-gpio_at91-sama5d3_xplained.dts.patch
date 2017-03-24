@@ -1,0 +1,27 @@
+diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+index ff888d2..83ff63b 100644
+--- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
+@@ -332,5 +332,22 @@
+ 			label = "d3";
+ 			gpios = <&pioE 24 GPIO_ACTIVE_HIGH>;
+ 		};
++
++	};
++
++	pulses {
++		compatible = "gpio-pulses";
++
++		oil {
++			label = "oil";
++			gpios = <&pioA 17 GPIO_ACTIVE_HIGH>;
++			trigger = "both";
++		};
++
++		water {
++			label = "water";
++			gpios = <&pioA 19 GPIO_ACTIVE_HIGH>;
++			trigger = "rising";
++		};
+ 	};
+ };
