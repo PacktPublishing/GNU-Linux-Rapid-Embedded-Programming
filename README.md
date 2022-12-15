@@ -1,3 +1,15 @@
+
+### Get this product for $5
+
+<i>Packt is having its biggest sale of the year. Get this eBook or any other book, video, or course that you like just for $5 each</i>
+
+
+<b><p align='center'>[Buy now](https://packt.link/9781786461803)</p></b>
+
+
+<b><p align='center'>[Buy similar titles for just $5](https://subscription.packtpub.com/search)</p></b>
+
+
 # GNU/Linux Rapid Embedded Programming
 This is the code repository for [GNU/Linux Rapid Embedded Programming](https://www.packtpub.com/hardware-and-creative/gnulinux-rapid-embedded-programming?utm_source=github&utm_medium=repository&utm_content=9781786461803), published by Packt. It contains all the supporting project files necessary to work through the book from start to finish.
 
