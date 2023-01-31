@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	int ret;
 
 	/* Check command line */
-	if (argc < 1)
+	if (argc < 2)
 		usage();
 	ifname = argv[1];
 	
